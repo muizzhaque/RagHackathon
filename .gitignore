@@ -172,5 +172,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 
 config.py
+rag 1.txt
 
 #.idea/
