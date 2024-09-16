@@ -8,7 +8,6 @@ __pycache__/
 
 # Other extensions
 *.pdf
-*.csv
 *.log
 *.xls
 *.xlsx
