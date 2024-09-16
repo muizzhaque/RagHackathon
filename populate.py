@@ -1,7 +1,14 @@
 from pg_conn import PG
 
 class Schema:
+    """
+    A class which will be used to create schema and populate it from a csv file.
 
+    Attributes:
+        dbname: the database you wanna connect.
+        table_name: name of the table you wanna create schema for.
+        df: dataframe of the csv file provided.
+    """
     def __init__(self,dbname) -> None:
         self.pg = PG(dbname)
 

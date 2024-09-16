@@ -1,9 +1,14 @@
+"""
+    Stores details needed to connect to postgresql database.
+"""
+
+
 database_names={
-    'dbname':{
+    'DBNAME':{
         'host': 'localhost',
-        'dbname' : 'dbname',
+        'dbname' : 'DBNAME',
         'user' : 'postgres',
-        'password' : 'password',
+        'password' : 'PASSWORD',
         'sslmode' : 'require'
         }
 }

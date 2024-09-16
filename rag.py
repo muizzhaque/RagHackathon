@@ -7,12 +7,18 @@ from pgvector.psycopg2 import register_vector
 from langchain_ollama import OllamaEmbeddings
 
 class RAG:
+    """
+    A class which is going to be a buildng block and the first step to understand RAG
+
+    This contains creation of schema, population and getting embeddings using Ollama model and storing it as well in postgresql.
+    Then we can use pgvector to get the nearest distance from the question embeddings to the stored embeddings.
+    """
 
     def __init__(self, dbname) -> None:
         self.pg = PG(dbname)
-        self.embeddings = OllamaEmbeddings(
-            model="llama3",
-        )
+        # self.embeddings = OllamaEmbeddings(
+        #     model="llama3.1:8b",
+        # )
 
     def get_table_ready(self, dbname, table_name, path_to_csv, embedd_col):
         populate = Schema(dbname)
@@ -28,10 +34,9 @@ class RAG:
         df = df[['id'] + [col for col in df.columns if col != 'id']]
         df.columns = [item.strip().replace(' ','_').lower() for item in df.columns.to_list()]
         # get vector embeddings for description
-        df['embedding'] = None
-        df = self.pg.select_sql('select * from cars')[['id',embedd_col]]
-        for i in range(len(df)):
-            df['embedding'][i] = self.embeddings.embed_query(df[embedd_col][i])
+        # df['embedding'] = None
+        # for i in range(len(df)):
+        #     df['embedding'][i] = self.embeddings.embed_query(df[embedd_col][i])[:256]
         column_dict = {}
         for i, (column, dtype) in enumerate(df.dtypes.items()):
             if i == 0:  # Check if it's the first column
@@ -125,8 +130,10 @@ if __name__=='__main__':
     obj = RAG(dbname)
     path_to_csv = os.path.join('Datasets','Cars.csv')
     table_name = 'cars'
+    # this is the column name of which you want embeddings
+    embed_col = 'trim_description'
     need_to_populate = True
     if need_to_populate:
-        obj.get_table_ready(dbname, table_name,path_to_csv)
+        obj.get_table_ready(dbname, table_name,path_to_csv, embed_col)
     obj.query_rag(table_name)
 
