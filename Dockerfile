@@ -1,6 +1,8 @@
+# This is to build docker image and deploy this image.
+
 FROM python:3.11.10-slim
 
-WORKDIR /streamlit
+WORKDIR /RAGHACKATHON
 
 RUN apt-get update && apt-get install -y \
     build-essential \

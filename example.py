@@ -1,5 +1,5 @@
 import csv
-import os
+import os, time
 import streamlit as st
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.vectorstores import Chroma
@@ -10,6 +10,10 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.text_splitter import CharacterTextSplitter
 
+
+"""
+This script showcases how we can use RAG on a csv file and deploy it locally using streamlit
+"""
  # URL processing
 def process_input(path_to_csv, question):
     model_local = Ollama(model="llama3.1:8b")
@@ -51,38 +55,25 @@ def process_input(path_to_csv, question):
     response = q_chain.invoke(
                 {"input": question + "\nSources: " + matches_table})
     print("Response:", response)
+
     return response
 
     
 
 st.title("RAG Query with Ollama")
 
+# Initialize session state for storing conversation history
+if 'conversation' not in st.session_state:
+    st.session_state.conversation = []
+
 # Input fields
 USER_MESSAGE = st.text_input("RAG Query")
 
 # load data
-df = pd.read_csv(path_to_csv)
+path_to_csv = os.path.join('Datasets','Cars.csv')
 
 # Button to process input
 if st.button('Send'):
     with st.spinner('Processing...'):
-        answer = process_input(urls, USER_MESSAGE)
-        st.text_area("Answer", value=answer, height=300, disabled=True)
-
-# Initialize session state
-if 'exit' not in st.session_state:
-    st.session_state.exit = False
-
-# Function to handle user input
-def handle_input():
-    user_input = st.text_input("Enter your query|('/exit' to quit session): ")
-    if user_input == "/exit":
-        st.session_state.exit = True
-        st.write("You will have a fortuitous encounter soon, God Speed!")
-    else:
-        st.write(f"You entered: {user_input}")
-
-# Main loop
-if not st.session_state.exit:
-    handle_input()
+        answer = process_input(path_to_csv, USER_MESSAGE)
 
